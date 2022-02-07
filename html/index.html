@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jussis Tetris</title>
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
-  <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
@@ -18,7 +18,7 @@
     <canvas id="board" class="game-board"></canvas>
     <div class="right-column">
       <div>
-        <h1>TETRISJUSSI</h1>
+        <h1>TETRIS</h1>
         <p>Score: <span id="score">0</span></p>
         <p>Lines: <span id="lines">0</span></p>
         <p>Level: <span id="level">0</span></p>
@@ -27,11 +27,13 @@
       <button id="play-btn" onclick="play()" class="play-button">Play</button>
       <button id="pause-btn" onclick="pause()" class="play-button">Pause</button>
     </div>
+    <footer>© Martin Jussi 2022 </footer>
   </div>
   <script src="/js/constants.js"></script>
-  <script src="/js/gameplan.js"></script>
-  <script src="/js/shape.js"></script>
+  <script src="/js/board.js"></script>
+  <script src="/js/piece.js"></script>
   <script src="/js/main.js"></script>
+
 </body>
 
 </html>

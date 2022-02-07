@@ -7,10 +7,10 @@ const LINES_PER_LEVEL = 10;
 const NO_OF_HIGH_SCORES = 10;
 const COLORS = [
   'none',
-  'blue',
-  'pink',
-  'orange',
   'cyan',
+  'blue',
+  'orange',
+  'yellow',
   'green',
   'purple',
   'red'
@@ -71,7 +71,6 @@ const LEVEL = {
   18: 50,
   19: 30,
   20: 30,
-
 };
 
 const ROTATION = {

@@ -1,5 +1,6 @@
-* {
-  font-family: 'Press Start 2P', cursive;
+body {
+  background-color: antiquewhite;
+  font-family: 'Press Start 2P', monospace;
 }
 
 .grid {
@@ -7,7 +8,7 @@
   grid-template-columns: 350px 320px 200px;
   position: absolute;
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-70%,0);
 }
 
 .left-column {
@@ -27,12 +28,15 @@
 }
 
 .play-button {
-  background-color: #be07d6;
+  font-family: 'Press Start 2P', monospace;
+  background-color: #290cd3;
   font-size: 16px;
   padding: 15px 30px;
   cursor: pointer;
 }
 
 #pause-btn {
+  font-family: 'Press Start 2P', monospace;
+  background-color: aqua;
   display: none;
 }

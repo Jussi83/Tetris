@@ -1,11 +1,11 @@
-class Shape {
+class Piece {
   constructor(ctx) {
     this.ctx = ctx;
     this.spawn();
   }
 
   spawn() {
-    this.typeId = this.randomizeTetrominoType(COLORS.length - 1);
+    this.typeId = this.randomTetrisBlock(COLORS.length - 1);
     this.shape = SHAPES[this.typeId];
     this.color = COLORS[this.typeId];
     this.x = 0;
@@ -40,7 +40,7 @@ class Shape {
     this.x = this.typeId === 4 ? 4 : 3;
   }
 
-  randomizeTetrominoType(noOfTypes) {
+  randomTetrisBlock(noOfTypes) {
     return Math.floor(Math.random() * noOfTypes + 1);
   }
 }

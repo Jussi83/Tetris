@@ -1,4 +1,4 @@
-const canvas = document.getElementById('gameplan');
+const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const canvasNext = document.getElementById('next');
 const ctxNext = canvasNext.getContext('2d');
@@ -26,7 +26,7 @@ let account = new Proxy(accountValues, {
 
 let requestId = null;
 let time = null;
-
+//keys to move blocks
 const moves = {
   [KEY.LEFT]: (p) => ({ ...p, x: p.x - 1 }),
   [KEY.RIGHT]: (p) => ({ ...p, x: p.x + 1 }),
@@ -36,13 +36,13 @@ const moves = {
   [KEY.Q]: (p) => board.rotate(p, ROTATION.LEFT)
 };
 
-let gameplan = new Gameplan(ctx, ctxNext);
+let board = new Board(ctx, ctxNext);
 
 initNext();
-
+showHighScores();
 
 function initNext() {
-  // Calculate size of canvas from shapefix.
+  // Calculate size of canvas from constants.js
   ctxNext.canvas.width = 4 * BLOCK_SIZE;
   ctxNext.canvas.height = 4 * BLOCK_SIZE;
   ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
@@ -70,16 +70,16 @@ function handleKeyPress(event) {
         return;
       }
 
-      while (gameplan.valid(p)) {
+      while (board.valid(p)) {
         account.score += POINTS.HARD_DROP;
-        gameplan.shape.move(p);
+        board.piece.move(p);
         p = moves[KEY.DOWN](board.piece);
       }
-      gameplan.shape.hardDrop();
-    } else if (gameplan.valid(p)) {
+      board.piece.hardDrop();
+    } else if (board.valid(p)) {
       if (document.querySelector('#pause-btn').style.display === 'block') {
       }
-      gameplan.shape.move(p);
+      board.piece.move(p);
       if (event.keyCode === KEY.DOWN &&
         document.querySelector('#pause-btn').style.display === 'block') {
         account.score += POINTS.SOFT_DROP;
@@ -92,7 +92,7 @@ function resetGame() {
   account.score = 0;
   account.lines = 0;
   account.level = 0;
-  gameplan.reset();
+  board.reset();
   time = { start: performance.now(), elapsed: 0, level: LEVEL[account.level] };
 }
 
@@ -102,7 +102,7 @@ function play() {
     resetGame();
   }
 
-  // If we have an old game running then cancel it
+  // If there is an old game running this cancel it
   if (requestId) {
     cancelAnimationFrame(requestId);
   }
@@ -116,7 +116,7 @@ function animate(now = 0) {
   time.elapsed = now - time.start;
   if (time.elapsed > time.level) {
     time.start = now;
-    if (!gameplan.drop()) {
+    if (!board.drop()) {
       gameOver();
       return;
     }
@@ -124,8 +124,7 @@ function animate(now = 0) {
 
   // Clear board before drawing new state.
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-  gameplan.draw();
+  board.draw();
   requestId = requestAnimationFrame(animate);
 }
 
@@ -137,6 +136,8 @@ function gameOver() {
   ctx.font = '1px Arial';
   ctx.fillStyle = 'red';
   ctx.fillText('GAME OVER', 1.8, 4);
+  checkHighScore(account.score);
+
   document.querySelector('#pause-btn').style.display = 'none';
   document.querySelector('#play-btn').style.display = '';
 }
@@ -151,12 +152,39 @@ function pause() {
 
   cancelAnimationFrame(requestId);
   requestId = null;
-
   ctx.fillStyle = 'black';
   ctx.fillRect(1, 3, 8, 1.2);
   ctx.font = '1px Arial';
-  ctx.fillStyle = 'yellow';
+  ctx.fillStyle = 'red';
   ctx.fillText('PAUSED', 3, 4);
   document.querySelector('#play-btn').style.display = 'block';
   document.querySelector('#pause-btn').style.display = 'none';
+}
+
+function showHighScores() {
+  const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+  const highScoreList = document.getElementById('highScores');
+
+  highScoreList.innerHTML = highScores
+    .map((score) => `<li>${score.score} - ${score.name}`)
+    .join('');
+}
+
+function checkHighScore(score) {
+  const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+  const lowestScore = highScores[NO_OF_HIGH_SCORES - 1]?.score ?? 0;
+
+  if (score > lowestScore) {
+    const name = prompt('You got a highscore! Enter name:');
+    const newScore = { score, name };
+    saveHighScore(newScore, highScores);
+    showHighScores();
+  }
+}
+
+function saveHighScore(score, highScores) {
+  highScores.push(score);
+  highScores.sort((a, b) => b.score - a.score);
+  highScores.splice(NO_OF_HIGH_SCORES);
+  localStorage.setItem('highScores', JSON.stringify(highScores));
 }
